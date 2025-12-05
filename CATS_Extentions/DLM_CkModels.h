@@ -91,9 +91,13 @@ double Lednicky_gauss_LAL_v2(const double &Momentum, const double *SourcePar, co
 double Lednicky_CC_pAL(const double &Momentum, const double *SourcePar, const double *PotPar);
 double Lednicky_CC_LAL(const double &Momentum, const double *SourcePar, const double *PotPar);
 
-// AD-hoc function to read
+double GeneralLednicky_RelativisticBW_amplitude(const double &Momentum, const double &GaussR, const double &MassR, const double &Gamma, const double &m1, const double &m2);
 
-void SetLedniIntegral_SourceFunction(double (*AS)(double *), CATSparameters &Pars);
+double Lednicky_BWResoOnly(const double &Momentum, const double *SourcePar, const double *PotPar);
+
+    // AD-hoc function to read
+
+    void SetLedniIntegral_SourceFunction(double (*AS)(double *), CATSparameters &Pars);
 void SetLedniIntegral_SourceClass(void *context, const unsigned &numparameters = 0);
 void RemoveLedniIntegral_SourceFunction();
 void RemoveLedniIntegral_SourceClass();

@@ -1304,3 +1304,49 @@ double LednickySilltwochannelsERE_doublegaussian_lambda(const double &Momentum, 
 
     return (weight * cfemto + (1 - weight) * csill);
 }
+
+// ###############################################
+/// @brief  Lednicky-Lyuboshits formula with resonant FSI only, scatt. amplitude given by relativistic BW (πK0s paper Phys.Lett.B 856 (2024) 138915, 2024.)
+double GeneralLednicky_RelativisticBW_amplitude(const double &Momentum, const double &GaussR, const double &MassR, const double &Gamma, const double &m1, const double &m2)
+{
+
+    if (GaussR != GaussR)
+    {
+        printf("\033[1;33mWARNING:\033[0m GeneralLednickySill got a bad value for the Radius (nan). Returning default value of 1.\n");
+        return 1;
+    }
+
+    const double Radius = GaussR * FmToNu;
+
+    double F1 = gsl_sf_dawson(2. * Momentum * Radius) / (2. * Momentum * Radius);
+    double F2 = (1. - exp(-4. * Momentum * Momentum * Radius * Radius)) / (2. * Momentum * Radius);
+
+    double En = sqrt(pow(m1, 2) + pow(Momentum, 2)) + sqrt(pow(m2, 2) + pow(Momentum, 2));
+    double svar = pow(En,2.);
+
+    complex<double> ScattAmpl = Gamma / (MassR * MassR - svar - i * Gamma * Momentum);
+
+    /// correction for small sources, involving
+    double DeltaC = pow(abs(ScattAmpl), 2) * (2. + m2 / m1 + m1 / m2) / (2. * sqrt(Pi) * Radius * Radius * Radius * Gamma);
+
+    double CkValue = 0.;
+
+    double alpha = 0.5;
+    CkValue += alpha * 0.5 * (pow(abs(ScattAmpl) / Radius, 2) + 4 * real(ScattAmpl) * F1 / (sqrt(Pi) * Radius) - 2 * imag(ScattAmpl) * F2 / Radius + DeltaC);
+
+    CkValue += 1;
+
+    return CkValue;
+}
+
+double Lednicky_BWResoOnly(const double &Momentum, const double *SourcePar, const double *PotPar)
+{
+    double MassR = PotPar[0];
+    double Gamma= PotPar[1];
+    double m1 = PotPar[2];
+    double m2 = PotPar[3];
+
+    double cf = GeneralLednicky_RelativisticBW_amplitude(Momentum, SourcePar[0],MassR,Gamma,m1,m2);
+
+    return cf;
+}
