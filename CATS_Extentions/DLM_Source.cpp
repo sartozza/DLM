@@ -276,7 +276,6 @@ double Stupid3DGaussSum(double *Pars)
         return 0;
     // double& CosTh = Pars[2];
     unsigned NG = round(Pars[3]);
-    cout << "NG =" << NG << endl;
     double Result = 0;
     double WeightSum = 0;
     double Weight;
@@ -284,7 +283,6 @@ double Stupid3DGaussSum(double *Pars)
     for (unsigned uG = 0; uG < NG; uG++)
     {
         Weight = (1. - WeightSum) * Pars[4 + uG * 2];
-        cout << "Weight =" << Weight << endl;
         static bool ErrorShown = false;
         if (!ErrorShown && (Weight < 0 || Weight > 1))
         {
@@ -293,7 +291,6 @@ double Stupid3DGaussSum(double *Pars)
         }
         WeightSum += Weight;
         sigmaR = Pars[5 + uG * 2];
-        cout << "sigmaR =" << sigmaR << endl;
         double NormDist = pow(4. * Pi * sigmaR * sigmaR, -1.5) * exp(-0.25 * pow((Rad) / sigmaR, 2.));
         Result += Weight * 4 * Pi * Rad * Rad * NormDist;
     }
